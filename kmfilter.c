@@ -61,9 +61,6 @@ static void initConfig(char * filename){
 		}
 	}
 	fclose(fp);
-	//fprintf(stdout, "port:%d\n", server.port);
-	//fprintf(stdout, "dwfile:%s\n", server.dwfile);
-	//fprintf(stdout, "pidfile:%s\n", server.pidfile);
 }
 
 bool createFTree(){
@@ -93,7 +90,6 @@ void sock_read(int fd, short event, void *arg){
 	strtok(buf,"\r");
 	fprintf(stdout, "buf:%sxxx", buf);
 	if(!strcasecmp(buf,"quit")){
-		fprintf(stdout,"aaaaaaaaaaaaa");
 		close(fd);
 		free(ev);
 		return;
@@ -108,7 +104,7 @@ static void sock_accept(int fd, short event, void *arg){
 	struct sockaddr addr;
 	int s;
 	socklen_t len = sizeof(addr);
-	struct event* rev = (struct event*)malloc(sizeof(*rev));
+	struct event *rev = (struct event *)malloc(sizeof(*rev));
 
 	if((s = accept(fd, &addr, &len)) == -1){
 		fprintf(stderr, "Sock Accept Failed!\n");
@@ -121,10 +117,12 @@ static void sock_accept(int fd, short event, void *arg){
 }
 
 static void initServer(){
-    struct event ev;
+    struct event *ev;
     int fd;
     struct sockaddr_in addr;    
- 
+	
+	ev = (struct event *)malloc(sizeof(*ev)); 
+
     if ((fd = socket(AF_INET, SOCK_STREAM, 0)) == -1)
     {
         fprintf(stderr, "Sock Create Failed!\n");
@@ -148,11 +146,9 @@ static void initServer(){
     }
 
     event_init();
-    event_set(&ev, fd, EV_READ, sock_accept, &ev);
-    event_add(&ev, NULL);
+    event_set(ev, fd, EV_READ, sock_accept, ev);
+    event_add(ev, NULL);
     event_dispatch();
-
-
 }
 
 static void daemonize(){
