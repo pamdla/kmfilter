@@ -171,10 +171,11 @@ int main(int argc, char **argv){
 		fprintf(stderr, "Usage: kmfilterpath/kmfilter configpath/kmfilter.conf\n");
 		exit(1);
 	}
+	/* create filter tree according to the dword.txt. or other file you named in config file */
 	createFTree();
-	//char *ret = tree_filter("abcdssdACABCeeexyzsssabc");
-	//fprintf(stdout,"ret:%s\n",ret);
+	/* daemon start */
 	if(server.daemon)daemonize();
+	/* create the levent to accept requests */
 	initServer();
 	return 0;
 }
